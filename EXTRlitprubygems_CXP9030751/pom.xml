@@ -1,0 +1,139 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.ericsson.nms.litp.3pps</groupId>
+    <artifactId>EXTRlitprubygems_CXP9030751</artifactId>
+    <packaging>rpm</packaging>
+    <name>[${project.artifactId}] RPM module</name>
+    <description>RubyGems 1.3.7-1 repackaged by Ericsson from rubyforge source code. The Ruby standard for packaging ruby libraries</description>
+    <parent>
+        <groupId>com.ericsson.nms.litp.3pps</groupId>
+        <artifactId>EXTRlitprubygems</artifactId>
+        <version>1.2.5-SNAPSHOT</version>
+    </parent>
+    <properties>
+    <!-- publishes the rpm module to the ci portal -->
+        <publish_artifact>true</publish_artifact>
+    </properties>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.5</version>
+                <executions>
+                    <execution>
+                        <!-- Download hiera -->
+                        <id>unpack_hiera</id>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.rubyforge</groupId>
+                                    <artifactId>rubygems</artifactId>
+                                    <version>1.3.7</version>
+                                    <type>tar.gz</type>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>${project.build.directory}/SOURCES</outputDirectory>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>rpm-maven-plugin</artifactId>
+                <version>2.1-alpha-1</version>
+                <extensions>true</extensions>
+                <inherited>false</inherited>
+                <configuration>
+                    <!--<needarch>x86_64</needarch>-->
+                    <requires>
+                        <require>/usr/bin/ruby</require>
+                        <require>rpmlib(CompressedFileNames) &lt;= 3.0.4-1</require>
+                        <require>rpmlib(FileDigests) &lt;= 4.6.0-1</require>
+                        <require>rpmlib(PayloadFilesHavePrefix) &lt;= 4.0-1</require>
+                        <require>rpmlib(VersionedDependencies) &lt;= 3.0.3-1</require>
+                        <require>ruby(abi) = 1.8</require>
+                        <require>ruby-rdoc</require>
+                        <require>rpmlib(PayloadIsXz) &lt;= 5.2-1</require>
+                    </requires>
+                    <provides>
+                        <provide>ruby(rubygems) = 1.3.7</provide>
+                        <provide>rubygems = 1.3.7-1.el6</provide>
+                    </provides>
+                    <mappings>
+                       <mapping>
+                            <directory>/usr/bin/</directory>
+                            <directoryIncluded>false</directoryIncluded>
+                            <sources>
+                                <source>
+                                    <location>${project.build.directory}/SOURCES/rubygems-${rubygems.version}/bin</location>
+                                    <includes>
+                                        <include>gem</include>
+                                    </includes>
+                                </source>
+                            </sources>
+                        </mapping>
+                        <mapping>
+                            <directory>/usr/lib/ruby/gems/</directory>
+                        </mapping>
+                        <mapping>
+                            <directory>/usr/lib/ruby/gems/1.8/</directory>
+                        </mapping> 
+                        <mapping>
+                            <directory>/usr/lib/ruby/gems/1.8/cache</directory>
+                        </mapping>
+                        <mapping>
+                            <directory>/usr/lib/ruby/gems/1.8/doc/</directory>
+                            <directoryIncluded>true</directoryIncluded>
+                        </mapping>
+                        <mapping>
+                            <directory>/usr/lib/ruby/gems/1.8/gems/</directory>
+                            <directoryIncluded>true</directoryIncluded>
+                        </mapping>
+                        <mapping>
+                            <directory>/usr/lib/ruby/gems/1.8/specifications/</directory>
+                            <directoryIncluded>true</directoryIncluded>
+                        </mapping>
+                        <mapping>
+                            <directory>/usr/lib/ruby/site_ruby/1.8/lib/</directory>
+                            <directoryIncluded>true</directoryIncluded>
+                        </mapping>
+                        <mapping>
+                            <directory>/usr/lib/ruby/site_ruby/1.8/</directory>
+                            <directoryIncluded>false</directoryIncluded>
+                            <recurseDirectories>true</recurseDirectories>
+                            <sources>
+                                <source>
+                                    <location>${project.build.directory}/SOURCES/rubygems-${rubygems.version}/lib/</location>
+                                </source>
+                            </sources>
+                        </mapping>
+                        <mapping>
+                            <directory>/usr/share/doc/rubygems-${rubygems.version}/</directory>
+                            <documentation>true</documentation>
+                            <directoryIncluded>true</directoryIncluded>
+                            <sources>
+                                <source>
+                                    <location>${project.build.directory}/SOURCES/rubygems-${rubygems.version}/</location>
+                                    <includes>
+                                        <include>ChangeLog</include>
+                                        <include>GPL.txt</include>
+                                        <include>History.txt</include>
+                                        <include>LICENSE.txt</include>
+                                        <include>README</include>
+                                    </includes>
+                                </source>
+                            </sources>
+                        </mapping>
+                    </mappings>
+                </configuration>
+            </plugin> 
+        </plugins>
+    </build>
+</project>
